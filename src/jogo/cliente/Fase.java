@@ -14,6 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -29,6 +33,9 @@ public class Fase extends JPanel implements ActionListener{
     private Image fundo;
     private Nave nave, nave2;    
     private Timer timer;
+    private Socket socket;
+    private DataInputStream in; //canal de entrada
+    private DataOutput out; //canal de saida
     
     private boolean emJogo;
     
@@ -42,22 +49,33 @@ public class Fase extends JPanel implements ActionListener{
         { 860, 20 }, { 740, 180 }, { 820, 128 }, { 490, 170 }, { 700, 30 },
         { 920, 300 }, { 856, 328 }, { 456, 320 } };
     
-    public Fase(){
+    public Fase(int id){
+        
         
         setFocusable(true);
         setDoubleBuffered(true);
         addKeyListener(new TecladoAdapter());
         
         ImageIcon referencia = new ImageIcon("imagens/fundo.png");
-        fundo = referencia.getImage();       
-        nave = new Nave();      
+        fundo = referencia.getImage();  
      
-        emJogo=true;
+        //nave = new Nave(0,100,100);
+        
+        escolhaNave(id);
+     
+        emJogo=false;
         
         inicializaInimigos();
         
         timer = new Timer(5, this);
         timer.start();
+    }
+    public void escolhaNave(int id){
+           if (id == 0){
+            nave = new Nave(0,100,90);
+        }else{
+            nave = new Nave(1,400,100);
+        }
     }
     public void inicializaInimigos(){
         inimigos = new ArrayList<Inimigo>();
@@ -66,7 +84,8 @@ public class Fase extends JPanel implements ActionListener{
             inimigos.add(new Inimigo(coordenadas[i][0], coordenadas [i][1]));
         }
     }   
-    
+    // esse método inicia os canais de saida e enetrada e cria uma trhead da classe escuta servidor
+   
     @Override
     public void paint(Graphics g){
         Graphics2D graficos = (Graphics2D) g;
@@ -75,6 +94,7 @@ public class Fase extends JPanel implements ActionListener{
         if(emJogo){
          
             graficos.drawImage(nave.getImagem(), nave.getX(), nave.getY(), this);
+           
 
             List<Missel> misseis = nave.getMisseis();
 
@@ -83,11 +103,11 @@ public class Fase extends JPanel implements ActionListener{
                 graficos.drawImage(m.getImagem(), m.getX(), m.getY(), this);
 
             }
-            for (int i = 0; i < inimigos.size(); i++) {
-                Inimigo in = inimigos.get(i);
-                graficos.drawImage(in.getImagem(), in.getX(), in.getY(), this);
+           // for (int i = 0; i < inimigos.size(); i++) {
+             //   Inimigo in = inimigos.get(i);
+             //   graficos.drawImage(in.getImagem(), in.getX(), in.getY(), this);
 
-            }
+          //  }
             graficos.setColor(Color.WHITE);
             graficos.drawString("Inimigos: "+ inimigos.size(), 5,15);
             
@@ -100,7 +120,7 @@ public class Fase extends JPanel implements ActionListener{
         g.dispose();
     }
 
-    @Override
+ 
     public void actionPerformed(ActionEvent e) {
         
         if(inimigos.size()==0){
@@ -114,7 +134,7 @@ public class Fase extends JPanel implements ActionListener{
             Missel m = (Missel) misseis.get(i);
             
             if(m.isVisivel()){
-                m.mexer();;
+                m.mexer();
             }else{
                 misseis.remove(i);
             }
@@ -130,11 +150,14 @@ public class Fase extends JPanel implements ActionListener{
         }
         
         nave.mexer();
-        checarColisoes();
+        
+      //  checarColisoes();
         
         repaint(); // redesenhar na tela 
     }
-    
+
+   
+    /*
     public void checarColisoes(){
         
         Rectangle formaNave = nave.getBounds();
@@ -171,18 +194,19 @@ public class Fase extends JPanel implements ActionListener{
         
     }
     
-    
+    */
     // pega os eventos do teclado
     private class TecladoAdapter extends KeyAdapter{
         @Override
         public void keyPressed(KeyEvent e){
             if(e.getKeyCode()== KeyEvent.VK_ENTER){
                 emJogo=true;
-                nave= new Nave();
-                inicializaInimigos();
+                //nave= new Nave(0);
+                //inicializaInimigos();
                 
             }
             nave.keyPressed(e);
+            
         }
         @Override
         public void keyReleased(KeyEvent e){

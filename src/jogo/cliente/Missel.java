@@ -16,16 +16,19 @@ import javax.swing.ImageIcon;
 public class Missel {
     
     private Image imagem;
-    private int x,y;
+    private int x,y,id;
     private int largura, altura;
     private boolean isVisivel;
+    
+   
     
     private static final int LARGURA_TELA = 500;
     private static final int VELOCIDADE = 2;
     
-    public Missel(int x, int y){
+    public Missel(int x, int y, int id){
         this.x=x;
         this.y=y;
+        this.id=id;
         
         ImageIcon referencia = new ImageIcon("imagens/missel.png");
         imagem = referencia.getImage();
@@ -35,8 +38,13 @@ public class Missel {
         
         isVisivel = true;
     }
-    public void mexer(){
-        this.x += VELOCIDADE;
+    public void mexer(){     
+        if (id == 0){
+            this.x += VELOCIDADE;
+        }else{
+            this.x -= VELOCIDADE;
+        }
+       
         if(this.x > LARGURA_TELA){
             isVisivel = false;
         }

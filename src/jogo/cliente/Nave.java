@@ -18,7 +18,7 @@ import javax.swing.ImageIcon;
  */
 public class Nave {
     
-    private int x,y;
+    private int x,y,id;
     private int dx,dy;
     private Image imagem;
     private int altura, largura;
@@ -26,7 +26,7 @@ public class Nave {
     
     private boolean isVisivel;
     
-    public Nave(){
+    public Nave(int id, int x, int y){
         
         ImageIcon referencia = new ImageIcon("imagens/nave.gif");
         imagem = referencia.getImage();
@@ -36,8 +36,9 @@ public class Nave {
         
         misseis = new ArrayList<Missel>();
         
-        this.x = 100;
-        this.y = 100;
+        this.id=id;
+        this.x = x;
+        this.y = y;
     }  
     
     public void mexer(){
@@ -82,7 +83,8 @@ public class Nave {
     
 	
     public void atira(){
-        this.misseis.add(new Missel(x+largura, y+altura/2));
+        
+        this.misseis.add(new Missel(x+largura, y+altura/2, id));
     }
     
     
@@ -102,12 +104,12 @@ public class Nave {
         if (codigo == KeyEvent.VK_DOWN){
             dy = 1;
         }
-          if ( codigo == KeyEvent.VK_LEFT){
-            dx = -1;
-        }
-        if (codigo == KeyEvent.VK_RIGHT){
-            dx = 1;
-        }
+        //   if ( codigo == KeyEvent.VK_LEFT){
+        //     dx = -1;
+       //  }
+        // // if (codigo == KeyEvent.VK_RIGHT){
+        //     dx = 1;
+        // }
     }
     public void keyReleased(KeyEvent tecla){
         int codigo = tecla.getKeyCode();
@@ -118,12 +120,12 @@ public class Nave {
          if (codigo == KeyEvent.VK_DOWN){
             dy = 0;
         }
-          if ( codigo == KeyEvent.VK_LEFT){
-            dx = 0;
-        }
-        if (codigo == KeyEvent.VK_RIGHT){
-            dx = 0;
-        }
+       //    if ( codigo == KeyEvent.VK_LEFT){
+        //     dx = 0;
+       //  }
+        // if (codigo == KeyEvent.VK_RIGHT){
+       //      dx = 0;
+       //  }
     
     }
 

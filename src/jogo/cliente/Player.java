@@ -10,5 +10,9 @@ package jogo.cliente;
  * @author julio
  */
 public class Player {
+    int id;
+    
+   
+    
     
 }
