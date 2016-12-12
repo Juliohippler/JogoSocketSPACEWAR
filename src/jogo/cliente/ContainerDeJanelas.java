@@ -9,6 +9,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -44,6 +47,8 @@ public class ContainerDeJanelas extends JFrame {
     JTextArea textoRecebido;
     Nave naveRecebida;
     Scanner leitor;
+     private DataInputStream in; //canal de entrada
+    private DataOutput out; //canal de saida
 
     public ContainerDeJanelas(String player, int id) throws IOException {
         super("Player: " + player);
@@ -57,7 +62,14 @@ public class ContainerDeJanelas extends JFrame {
         sobre.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Jogo desenvolvido por Cassiele, Julio Hippler e Mateus Walbrink, estudantes de Licenciatura em Computação na UFPR", "Informações", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Jogo desenvolvido por Cassiele Thais, Julio Hippler e Mateus Walbrink, estudantes de Licenciatura em Computação na UFPR", "Informações", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        JMenuItem conexao = new JMenuItem("Conexão de Rede");
+        conexao.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Conexão via Socket, IP 127.0.0.1,PORTA 5000");
             }
         });
         JMenuItem sair = new JMenuItem("Sair");
@@ -96,6 +108,8 @@ public class ContainerDeJanelas extends JFrame {
 
         menu.add(sobre);
         menu.add(new JSeparator());
+        menu.add(conexao);
+        menu.add(new JSeparator());
         menu.add(sair);
         barraMenu.add(menu);
 
@@ -126,22 +140,40 @@ public class ContainerDeJanelas extends JFrame {
     
     // COMECA A PARTE DO SOCKET 
     private class EscutaServidor implements Runnable {
-
+       
         @Override
         public void run() {
-            try {
-                String texto;
+            try { 
+                String texto;/*
+                while (true) {
+
+                    String s;
+                    s = in.readUTF();
+                  
+                    if(s.equals("baixo")){
+                        nave.y +=1;
+                    }else if(s.equals("cima")){
+                        nave.y -=1;
+                    }else if(s.equals("tiro")){
+                        
+                    }*/
+                        
+                    while ((texto = leitor.nextLine()) != null) {
+                        //naveRecebida.getImagem();
+                        textoRecebido.append(texto + "\n");// add no final o novo trexto 
+                    }
                 
-                while ((texto = leitor.nextLine()) != null) {
-                    //naveRecebida.getImagem();
-                    textoRecebido.append(texto + "\n");// add no final o novo trexto 
-                }
-            } catch (Exception x) {
-            }
+            }catch (Exception x) {}           
 
         }
     }
-    
+      public void initRedes(){
+        try{
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
+            
+        }catch(Exception e){}
+    }
     private class EnviarListener implements ActionListener {
 
         @Override

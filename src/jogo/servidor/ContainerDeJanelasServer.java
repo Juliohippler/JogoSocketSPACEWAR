@@ -5,7 +5,6 @@
  */
 package jogo.servidor;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -71,11 +70,9 @@ public class ContainerDeJanelasServer extends JFrame{
         for (PrintWriter w : escritores) {
             try{
                 w.println(texto);
-             //   w.print(nave);
+              //  w.print(nave);
                 w.flush();
-                while (true){
-                    
-                }
+       
                 
             }catch(Exception e ){}
                         
@@ -85,11 +82,11 @@ public class ContainerDeJanelasServer extends JFrame{
     private class EscutaCliente implements Runnable{
         
         Scanner leitor;
-      //  Scanner nave;
+     //   Scanner nave;
         public EscutaCliente(Socket socket){
             try{
                 leitor = new Scanner(socket.getInputStream());
-              //  nave = new Scanner(socket.getInputStream());
+       //         nave = new Scanner(socket.getInputStream());
             }catch (Exception e){}
         }
 
@@ -98,6 +95,8 @@ public class ContainerDeJanelasServer extends JFrame{
             try{          
             
                 String texto;
+         //       String nave1;
+           //     nave1 = nave.toString();
                // String nave = null;
                
                 while ((texto = leitor.nextLine()) != null) {
