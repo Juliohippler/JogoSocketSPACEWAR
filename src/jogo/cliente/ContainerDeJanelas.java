@@ -25,6 +25,7 @@ import java.io.Writer;
 import java.util.Scanner;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import jdk.internal.util.xml.impl.Input;
 import sun.applet.Main;
 
 /**
@@ -37,8 +38,11 @@ public class ContainerDeJanelas extends JFrame {
     PrintWriter escritor;
     JTextField textoParaEnviar;
     String player;
+    PrintWriter navinha;
+    Nave nave;
     int id;
     JTextArea textoRecebido;
+    Nave naveRecebida;
     Scanner leitor;
 
     public ContainerDeJanelas(String player, int id) throws IOException {
@@ -127,7 +131,9 @@ public class ContainerDeJanelas extends JFrame {
         public void run() {
             try {
                 String texto;
+                
                 while ((texto = leitor.nextLine()) != null) {
+                    //naveRecebida.getImagem();
                     textoRecebido.append(texto + "\n");// add no final o novo trexto 
                 }
             } catch (Exception x) {
@@ -143,8 +149,11 @@ public class ContainerDeJanelas extends JFrame {
             //responsavel por enviar as mensagens para o servidor
             escritor.println(player + " : " + textoParaEnviar.getText());
             escritor.flush();
+//            navinha.print(nave.getImagem());
+  //          navinha.flush();
             textoParaEnviar.setText("");
             textoParaEnviar.requestFocus();
+            
         }
 
     }
@@ -161,11 +170,15 @@ public class ContainerDeJanelas extends JFrame {
 
         }
     }
+  
+    
 
     public static void main(String[] args) throws IOException {
-        new ContainerDeJanelas(" 1", 0);
-        new ContainerDeJanelas(" 2", 1);
+        new ContainerDeJanelas("Player 1", 0);
+        new ContainerDeJanelas("Player 2", 1);
 
         // new ContainerDeJanelasServer();
     }
+    
+    
 }

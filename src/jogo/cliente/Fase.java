@@ -17,12 +17,16 @@ import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import jdk.internal.util.xml.impl.Input;
 
 /**
  *
@@ -70,11 +74,24 @@ public class Fase extends JPanel implements ActionListener{
         timer = new Timer(5, this);
         timer.start();
     }
+    
+    public void initRedes(){
+        try{
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
+            
+        }catch(Exception e){}
+    }
+    
+
+     
     public void escolhaNave(int id){
            if (id == 0){
             nave = new Nave(0,100,90);
+            nave2 = new Nave(1, 400,90);
         }else{
             nave = new Nave(1,400,100);
+            nave2 = new Nave(0,100,90);
         }
     }
     public void inicializaInimigos(){
@@ -94,6 +111,7 @@ public class Fase extends JPanel implements ActionListener{
         if(emJogo){
          
             graficos.drawImage(nave.getImagem(), nave.getX(), nave.getY(), this);
+            graficos.drawImage(nave2.getImagem(), nave2.getX(), nave2.getY(), this);
            
 
             List<Missel> misseis = nave.getMisseis();
@@ -205,7 +223,11 @@ public class Fase extends JPanel implements ActionListener{
                 //inicializaInimigos();
                 
             }
-            nave.keyPressed(e);
+            try {
+                nave.keyPressed(e);
+            } catch (IOException ex) {
+                Logger.getLogger(Fase.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
         }
         @Override
@@ -213,4 +235,5 @@ public class Fase extends JPanel implements ActionListener{
             nave.keyReleased(e);
         }
     }
+
 }

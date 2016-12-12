@@ -8,9 +8,14 @@ package jogo.cliente;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
+import jdk.internal.util.xml.impl.Input;
 
 /**
  *
@@ -18,11 +23,18 @@ import javax.swing.ImageIcon;
  */
 public class Nave {
     
-    private int x,y,id;
+    int x,y,id;
     private int dx,dy;
     private Image imagem;
     private int altura, largura;
     private List<Missel> misseis;
+    
+    private DataInputStream in;  //canal de entrada
+    private DataOutputStream out;
+    
+    private boolean net_atira=false;
+    private boolean net_baixo = false;
+    private boolean net_cima = false;
     
     private boolean isVisivel;
     
@@ -58,6 +70,8 @@ public class Nave {
 	}    
     }
     
+   
+   
     public List<Missel> getMisseis() {
 		return misseis;
     }
@@ -68,6 +82,10 @@ public class Nave {
 
     public int getY() {
         return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
     
     public Image getImagem() {
@@ -86,23 +104,48 @@ public class Nave {
         
         this.misseis.add(new Missel(x+largura, y+altura/2, id));
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getDx() {
+        return dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+    
+    // função que vai verificar o adversario e mover a nave 
     
     
-    
-    public void keyPressed(KeyEvent tecla){
+    public void keyPressed(KeyEvent tecla) throws IOException{
         
         
         int codigo = tecla.getKeyCode();
         
         if (codigo == KeyEvent.VK_SPACE){
             atira();
+            net_atira = true;
+            try{
+                out.writeUTF("atira");
+            }catch (Exception e){}
         }
         
         if ( codigo == KeyEvent.VK_UP){
             dy = -1;
+            net_cima=true;
+            try{
+                out.writeUTF("cima");
+            }catch (Exception e){}
         }
         if (codigo == KeyEvent.VK_DOWN){
             dy = 1;
+            net_baixo=true;
+            try{
+                out.writeUTF("baixo");
+            }catch (Exception e){}
         }
         //   if ( codigo == KeyEvent.VK_LEFT){
         //     dx = -1;

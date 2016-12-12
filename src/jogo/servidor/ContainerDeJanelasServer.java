@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jogo.cliente;
+package jogo.servidor;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -35,6 +37,9 @@ public class ContainerDeJanelasServer extends JFrame{
     
      
     List<PrintWriter> escritores = new ArrayList<>();
+    List<PrintWriter> naves = new ArrayList<>();
+    public DataInputStream in;
+    public DataOutputStream out;
     
     public ContainerDeJanelasServer() throws IOException {
         
@@ -49,7 +54,9 @@ public class ContainerDeJanelasServer extends JFrame{
                     Socket socket = server.accept();
                     new Thread(new EscutaCliente(socket)).start();
                     PrintWriter p = new PrintWriter(socket.getOutputStream());
+                //    PrintWriter n= new PrintWriter(socket.getOutputStream());
                     escritores.add(p);
+                 //   naves.add(n);
                     //scan = new Scanner(s.getInputStream());
                     //System.out.println(scan.nextLine());
                     
@@ -58,11 +65,18 @@ public class ContainerDeJanelasServer extends JFrame{
         }      
    }
     
+    
     private void encaminharParaTodos(String texto){
+        
         for (PrintWriter w : escritores) {
             try{
                 w.println(texto);
+             //   w.print(nave);
                 w.flush();
+                while (true){
+                    
+                }
+                
             }catch(Exception e ){}
                         
         }
@@ -71,9 +85,11 @@ public class ContainerDeJanelasServer extends JFrame{
     private class EscutaCliente implements Runnable{
         
         Scanner leitor;
+      //  Scanner nave;
         public EscutaCliente(Socket socket){
             try{
                 leitor = new Scanner(socket.getInputStream());
+              //  nave = new Scanner(socket.getInputStream());
             }catch (Exception e){}
         }
 
@@ -82,7 +98,10 @@ public class ContainerDeJanelasServer extends JFrame{
             try{          
             
                 String texto;
+               // String nave = null;
+               
                 while ((texto = leitor.nextLine()) != null) {
+                 //   System.out.print(nave);
                     System.out.println(texto);
                     encaminharParaTodos(texto);
             }
